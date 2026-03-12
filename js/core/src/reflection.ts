@@ -217,7 +217,14 @@ export class ReflectionServer {
     });
 
     server.post('/api/runAction', async (request, response, next) => {
-      const { key, input, context, telemetryLabels } = request.body;
+      const { key, input, context: bodyContext, telemetryLabels } =
+        request.body;
+        
+      const context =
+        bodyContext != null && typeof bodyContext === 'object'
+          ? bodyContext
+          : {};
+
       const { stream } = request.query;
       logger.debug(`Running action \`${key}\` with stream=${stream}...`);
       const abortController = new AbortController();
